@@ -1,0 +1,12 @@
+{
+  "name": "agn-bank-ltd",
+  "version": "1.0.0",
+  "description": "AGN Bank Ltd family banking game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

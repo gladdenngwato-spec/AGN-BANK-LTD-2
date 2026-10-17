@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGN Bank Ltd - Customer App</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f2f6fb;
+        color: #222;
+    }
+
+    header {
+        background: #0756a3;
+        color: white;
+        padding: 18px;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0;
+    }
+
+    .container {
+        width: 95%;
+        max-width: 1100px;
+        margin: 20px auto;
+    }
+
+    .card {
+        background: white;
+        padding: 22px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    input,
+    select,
+    button {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 7px;
+        border: 1px solid #bbb;
+        font-size: 15px;
+    }
+
+    button {
+        background: #0756a3;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #063f79;
+    }
+
+    .danger {
+        background: #c62828;
+    }
+
+    .success {
+        background: #218838;
+    }
+
+    .secondary {
+        background: #555;
+    }
+
+    .choice {
+        padding: 25px;
+        margin: 10px 0;
+        font-size: 18px;
+    }
+
+    .balance {
+        background: #0756a3;
+        color: white;
+        padding: 25px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .balance h2 {
+        margin: 5px;
+    }
+
+    .balance-value {
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin: 20px 0;
+    }
+
+    .menu-grid button {
+        min-height: 55px;
+    }
+
+    .section {
+        display: none;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    .school-fee-box {
+        background: #eef6ff;
+        border: 2px solid #0756a3;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    .fee-display {
+        font-size: 25px;
+        font-weight: bold;
+        color: #0756a3;
+        text-align: center;
+        padding: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th,
+    td {
+        border: 1px solid #ddd;
+        padding: 9px;
+        text-align: left;
+    }
+
+    th {
+        background: #0756a3;
+        color: white;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+    }
+
+    .product {
+        border: 1px solid #ddd;
+        padding: 12px;
+        border-radius: 8px;
+        background: #fafafa;
+    }
+
+    .product input {
+        margin-bottom: 0;
+    }
+
+    .message {
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 7px;
+        display: none;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.success-message {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .message.error-message {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .top-info {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    @media (max-width: 600px) {
+        table {
+            font-size: 13px;
+        }
+
+        .card {
+            padding: 15px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>AGN Bank Ltd</h1>
+    <p>Customer Banking App</p>
+</header>
+
+<div class="container">
+
+    <!-- START PAGE -->
+    <div id="startPage" class="card">
+        <h2>Welcome to AGN Bank Ltd</h2>
+        <p>Please choose an option:</p>
+
+        <button class="choice" onclick="showCreateAccount()">
+            Create Account
+        </button>
+
+        <button class="choice" onclick="showLogin()">
+            Login
+        </button>
+    </div>
+
+
+    <!-- CREATE ACCOUNT -->
+    <div id="createAccountPage" class="card hidden">
+
+        <h2>Create Account</h2>
+
+        <div id="accountMessage" class="message"></div>
+
+        <label>Full Name</label>
+        <input type="text" id="createName" placeholder="Enter your full name">
+
+        <label>Birthdate</label>
+        <input type="date" id="createBirthdate">
+
+        <label>Age</label>
+        <input type="number" id="createAge" placeholder="Enter your age">
+
+        <button onclick="submitAccountRequest()">
+            Create Account
+        </button>
+
+        <button class="secondary" onclick="backToStart()">
+            Back
+        </button>
+    </div>
+
+
+    <!-- LOGIN -->
+    <div id="loginPage" class="card hidden">
+
+        <h2>Customer Login</h2>
+
+        <div id="loginMessage" class="message"></div>
+
+        <label>Account Number</label>
+        <input type="text" id="loginAccount" placeholder="Enter account number">
+
+        <label>PIN</label>
+        <input type="password" id="loginPin" placeholder="Enter 4-digit PIN">
+
+        <button onclick="login()">
+            Login
+        </button>
+
+        <button class="secondary" onclick="backToStart()">
+            Back
+        </button>
+    </div>
+
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="hidden">
+
+        <div class="card">
+
+            <div class="top-info">
+                <div>
+                    <h2>Customer Dashboard</h2>
+                    <p id="customerWelcome"></p>
+                    <p>
+                        Account Number:
+                        <strong id="displayAccount"></strong>
+                    </p>
+                </div>
+
+                <button onclick="logout()" class="danger" style="width:150px;">
+                    Logout
+                </button>
+            </div>
+
+            <div class="balance">
+                <h3>Available Balance</h3>
+                <div class="balance-value">
+                    $<span id="displayBalance">0.00</span>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- MENU -->
+        <div class="card">
+            <div class="menu-grid">
+
+                <button onclick="showSection('receiveSection')">
+                    Receive Money
+                </button>
+
+                <button onclick="showSection('billsSection')">
+                    Bills & Payments
+                </button>
+
+                <button onclick="showSection('schoolSection')">
+                    School Fees
+                </button>
+
+                <button onclick="showSection('grocerySection')">
+                    Grocery Corner
+                </button>
+
+                <button onclick="showSection('transactionsSection')">
+                    Transaction History
+                </button>
+
+                <button onclick="refreshAccount()">
+                    Refresh
+                </button>
+
+            </div>
+        </div>
+
+
+        <!-- RECEIVE MONEY -->
+        <div id="receiveSection" class="section card">
+
+            <h2>Receive Money</h2>
+
+            <p>
+                Money from work, NGO, family or another source must first
+                be approved by the bank manager.
+            </p>
+
+            <div id="receiveMessage" class="message"></div>
+
+            <label>Amount</label>
+            <input type="number" id="receiveAmount" step="0.01">
+
+            <label>Source</label>
+            <input type="text" id="receiveSource"
+                   placeholder="e.g. Work, NGO, Family">
+
+            <label>Reason</label>
+            <input type="text" id="receiveReason"
+                   placeholder="Reason for receiving money">
+
+            <button onclick="requestMoney()">
+                Send Request
+            </button>
+
+        </div>
+
+
+        <!-- BILLS -->
+        <div id="billsSection" class="section card">
+
+            <h2>Bills & Payments</h2>
+
+            <div id="billMessage" class="message"></div>
+
+            <label>Bill Type</label>
+
+            <select id="billType">
+                <option value="">-- Select Bill --</option>
+                <option value="electricity">Electricity</option>
+                <option value="water">Water</option>
+                <option value="airtime">Airtime</option>
+                <option value="internet">Internet/Data</option>
+                <option value="tv">TV Subscription</option>
+            </select>
+
+            <label>Reference / Meter / Phone Number</label>
+            <input type="text" id="billReference"
+                   placeholder="Enter bill reference">
+
+            <label>Amount</label>
+            <input type="number" id="billAmount"
+                   step="0.01">
+
+            <button onclick="payBill()">
+                Pay Bill
+            </button>
+
+        </div>
+
+
+        <!-- SCHOOL FEES -->
+        <div id="schoolSection" class="section card">
+
+            <h2>School Fees Payment</h2>
+
+            <div id="schoolMessage" class="message"></div>
+
+            <!-- EDUCATION LEVEL -->
+            <label>
+                Education Level
+            </label>
+
+            <select id="schoolCategory"
+                    onchange="updateSchoolList()">
+
+                <option value="">
+                    -- Select Education Level --
+                </option>
+
+                <option value="Kindergarten">
+                    Kindergarten
+                </option>
+
+                <option value="Primary School">
+                    Primary School
+                </option>
+
+                <option value="Day Secondary School">
+                    Day Secondary School
+                </option>
+
+                <option value="Boarding Secondary School">
+                    Boarding Secondary School
+                </option>
+
+                <option value="College">
+                    College
+                </option>
+
+                <option value="Polytechnic">
+                    Polytechnic
+                </option>
+
+                <option value="University">
+                    University
+                </option>
+
+            </select>
+
+
+            <!-- SCHOOL -->
+            <label>
+                Select School
+            </label>
+
+            <select id="schoolSelect"
+                    onchange="showSelectedSchoolFee()"
+                    disabled>
+
+                <option value="">
+                    -- Select Education Level First --
+                </option>
+
+            </select>
+
+
+            <!-- FEE -->
+            <div id="schoolFeeBox"
+                 class="school-fee-box hidden">
+
+                <p>
+                    Selected School:
+                    <strong id="selectedSchoolName"></strong>
+                </p>
+
+                <div class="fee-display">
+                    Fee: $<span id="selectedSchoolFee">0.00</span>
+                </div>
+
+            </div>
+
+
+            <!-- STUDENT -->
+            <label>
+                Student Name
+            </label>
+
+            <input type="text"
+                   id="studentName"
+                   placeholder="Enter student's name">
+
+
+            <button onclick="paySchoolFees()">
+                Pay School Fees
+            </button>
+
+        </div>
+
+
+        <!-- GROCERY -->
+        <div id="grocerySection" class="section card">
+
+            <h2>AGN Grocery Corner</h2>
+
+            <div id="groceryMessage" class="message"></div>
+
+            <div id="groceryProducts"
+                 class="product-grid">
+
+                Loading products...
+
+            </div>
+
+            <h3>
+                Total:
+                $<span id="groceryTotal">0.00</span>
+            </h3>
+
+            <button onclick="checkoutGroceries()">
+                Confirm Grocery Purchase
+            </button>
+
+        </div>
+
+
+        <!-- TRANSACTIONS -->
+        <div id="transactionsSection" class="section card">
+
+            <h2>Transaction History</h2>
+
+            <div id="transactionMessage"
+                 class="message"></div>
+
+            <div style="overflow-x:auto;">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Source</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="transactionsBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   SCHOOL DATA
+===================================================== */
+
+const schools = [
+
+    /* KINDERGARTEN */
+
+    {
+        id: 1,
+        name: "Little Stars Kindergarten",
+        category: "Kindergarten",
+        fee: 180
+    },
+
+    {
+        id: 2,
+        name: "Bright Future ECD Centre",
+        category: "Kindergarten",
+        fee: 220
+    },
+
+    {
+        id: 3,
+        name: "Sunrise Early Learning Centre",
+        category: "Kindergarten",
+        fee: 260
+    },
+
+    {
+        id: 4,
+        name: "Rainbow Kids Academy",
+        category: "Kindergarten",
+        fee: 300
+    },
+
+    {
+        id: 5,
+        name: "Happy Hearts Kindergarten",
+        category: "Kindergarten",
+        fee: 340
+    },
+
+    {
+        id: 6,
+        name: "Smart Tots Academy",
+        category: "Kindergarten",
+        fee: 380
+    },
+
+
+    /* PRIMARY */
+
+    {
+        id: 7,
+        name: "AGN Primary School",
+        category: "Primary School",
+        fee: 350
+    },
+
+    {
+        id: 8,
+        name: "Green Valley Primary School",
+        category: "Primary School",
+        fee: 400
+    },
+
+    {
+        id: 9,
+        name: "Bright Minds Primary School",
+        category: "Primary School",
+        fee: 450
+    },
+
+    {
+        id: 10,
+        name: "Sunrise Primary School",
+        category: "Primary School",
+        fee: 500
+    },
+
+    {
+        id: 11,
+        name: "Progress Primary School",
+        category: "Primary School",
+        fee: 550
+    },
+
+    {
+        id: 12,
+        name: "Excel Primary School",
+        category: "Primary School",
+        fee: 600
+    },
+
+
+    /* DAY SECONDARY */
+
+    {
+        id: 13,
+        name: "Harare Day Secondary School",
+        category: "Day Secondary School",
+        fee: 450
+    },
+
+    {
+        id: 14,
+        name: "Victory Day Secondary School",
+        category: "Day Secondary School",
+        fee: 500
+    },
+
+    {
+        id: 15,
+        name: "Horizon Secondary School",
+        category: "Day Secondary School",
+        fee: 550
+    },
+
+    {
+        id: 16,
+        name: "Excellence Day School",
+        category: "Day Secondary School",
+        fee: 600
+    },
+
+    {
+        id: 17,
+        name: "Unity Secondary School",
+        category: "Day Secondary School",
+        fee: 650
+    },
+
+    {
+        id: 18,
+        name: "Progressive Secondary School",
+        category: "Day Secondary School",
+        fee: 700
+    },
+
+
+    /* BOARDING SECONDARY */
+
+    {
+        id: 19,
+        name: "AGN Boarding Secondary School",
+        category: "Boarding Secondary School",
+        fee: 750
+    },
+
+    {
+        id: 20,
+        name: "Mount View Boarding School",
+        category: "Boarding Secondary School",
+        fee: 850
+    },
+
+    {
+        id: 21,
+        name: "Excellence Boarding School",
+        category: "Boarding Secondary School",
+        fee: 950
+    },
+
+    {
+        id: 22,
+        name: "Royal Heights College",
+        category: "Boarding Secondary School",
+        fee: 1050
+    },
+
+    {
+        id: 23,
+        name: "Hillcrest Boarding School",
+        category: "Boarding Secondary School",
+        fee: 1150
+    },
+
+    {
+        id: 24,
+        name: "Golden Future Boarding School",
+        category: "Boarding Secondary School",
+        fee: 1250
+    },
+
+
+    /* COLLEGE */
+
+    {
+        id: 25,
+        name: "Harare College",
+        category: "College",
+        fee: 600
+    },
+
+    {
+        id: 26,
+        name: "Brightway College",
+        category: "College",
+        fee: 700
+    },
+
+    {
+        id: 27,
+        name: "Excellence College",
+        category: "College",
+        fee: 800
+    },
+
+    {
+        id: 28,
+        name: "Central College",
+        category: "College",
+        fee: 900
+    },
+
+    {
+        id: 29,
+        name: "Future Leaders College",
+        category: "College",
+        fee: 1000
+    },
+
+    {
+        id: 30,
+        name: "Victory College",
+        category: "College",
+        fee: 1100
+    },
+
+
+    /* POLYTECHNIC */
+
+    {
+        id: 31,
+        name: "AGN Polytechnic",
+        category: "Polytechnic",
+        fee: 700
+    },
+
+    {
+        id: 32,
+        name: "Harare Technical Polytechnic",
+        category: "Polytechnic",
+        fee: 800
+    },
+
+    {
+        id: 33,
+        name: "Central Polytechnic",
+        category: "Polytechnic",
+        fee: 900
+    },
+
+    {
+        id: 34,
+        name: "Excellence Polytechnic",
+        category: "Polytechnic",
+        fee: 1000
+    },
+
+    {
+        id: 35,
+        name: "National Skills Polytechnic",
+        category: "Polytechnic",
+        fee: 1100
+    },
+
+    {
+        id: 36,
+        name: "Future Tech Polytechnic",
+        category: "Polytechnic",
+        fee: 1200
+    },
+
+
+    /* UNIVERSITY */
+
+    {
+        id: 37,
+        name: "AGN University",
+        category: "University",
+        fee: 900
+    },
+
+    {
+        id: 38,
+        name: "Harare International University",
+        category: "University",
+        fee: 1050
+    },
+
+    {
+        id: 39,
+        name: "Central University",
+        category: "University",
+        fee: 1200
+    },
+
+    {
+        id: 40,
+        name: "Excellence University",
+        category: "University",
+        fee: 1350
+    },
+
+    {
+        id: 41,
+        name: "Future Leaders University",
+        category: "University",
+        fee: 1500
+    },
+
+    {
+        id: 42,
+        name: "National University of Technology",
+        category: "University",
+        fee: 1650
+    }
+
+];
+
+
+/* =====================================================
+   GLOBAL CUSTOMER
+===================================================== */
+
+let currentCustomer = null;
+
+
+/* =====================================================
+   START / LOGIN / ACCOUNT
+===================================================== */
+
+function showCreateAccount() {
+
+    document.getElementById("startPage").classList.add("hidden");
+
+    document.getElementById("loginPage").classList.add("hidden");
+
+    document.getElementById("createAccountPage")
+        .classList.remove("hidden");
+}
+
+
+function showLogin() {
+
+    document.getElementById("startPage").classList.add("hidden");
+
+    document.getElementById("createAccountPage")
+        .classList.add("hidden");
+
+    document.getElementById("loginPage")
+        .classList.remove("hidden");
+}
+
+
+function backToStart() {
+
+    document.getElementById("startPage")
+        .classList.remove("hidden");
+
+    document.getElementById("createAccountPage")
+        .classList.add("hidden");
+
+    document.getElementById("loginPage")
+        .classList.add("hidden");
+}
+
+
+function showMessage(id, message, success = true) {
+
+    const box = document.getElementById(id);
+
+    box.textContent = message;
+
+    box.className = "message show " +
+        (success
+            ? "success-message"
+            : "error-message");
+}
+
+
+/* =====================================================
+   ACCOUNT REQUEST
+===================================================== */
+
+async function submitAccountRequest() {
+
+    const name =
+        document.getElementById("createName").value.trim();
+
+    const birthdate =
+        document.getElementById("createBirthdate").value;
+
+    const age =
+        document.getElementById("createAge").value;
+
+    if (!name || !birthdate || !age) {
+
+        showMessage(
+            "accountMessage",
+            "Please complete all fields.",
+            false
+        );
+
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/account-request", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                name,
+                birthdate,
+                age
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+                "accountMessage",
+                data.message,
+                false
+            );
+
+            return;
+        }
+
+        showMessage(
+            "accountMessage",
+            "Account request sent successfully. Wait for the manager to approve your account.",
+            true
+        );
+
+        document.getElementById("createName").value = "";
+        document.getElementById("createBirthdate").value = "";
+        document.getElementById("createAge").value = "";
+
+    } catch (error) {
+
+        showMessage(
+            "accountMessage",
+            "Could not connect to AGN Bank server.",
+            false
+        );
+    }
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+async function login() {
+
+    const accountNumber =
+        document.getElementById("loginAccount").value.trim();
+
+    const pin =
+        document.getElementById("loginPin").value.trim();
+
+    if (!accountNumber || !pin) {
+
+        showMessage(
+            "loginMessage",
+            "Enter your account number and PIN.",
+            false
+        );
+
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/login", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                accountNumber,
+                pin
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+                "loginMessage",
+                data.message,
+                false
+            );
+
+            return;
+        }
+
+        currentCustomer = data.customer;
+
+        localStorage.setItem(
+            "agnCustomer",
+            JSON.stringify(currentCustomer)
+        );
+
+        openDashboard();
+
+    } catch (error) {
+
+        showMessage(
+            "loginMessage",
+            "Could not connect to AGN Bank server.",
+            false
+        );
+    }
+}
+
+
+/* =====================================================
+   OPEN DASHBOARD
+===================================================== */
+
+function openDashboard() {
+
+    document.getElementById("startPage")
+        .classList.add("hidden");
+
+    document.getElementById("loginPage")
+        .classList.add("hidden");
+
+    document.getElementById("createAccountPage")
+        .classList.add("hidden");
+
+    document.getElementById("dashboard")
+        .classList.remove("hidden");
+
+    updateCustomerDisplay();
+
+    loadGroceries();
+
+    loadTransactions();
+}
+
+
+function updateCustomerDisplay() {
+
+    if (!currentCustomer) {
+        return;
+    }
+
+    document.getElementById("customerWelcome").textContent =
+        "Welcome, " + currentCustomer.name;
+
+    document.getElementById("displayAccount").textContent =
+        currentCustomer.accountNumber;
+
+    document.getElementById("displayBalance").textContent =
+        Number(currentCustomer.balance || 0).toFixed(2);
+}
+
+
+/* =====================================================
+   REFRESH
+===================================================== */
+
+async function refreshAccount() {
+
+    if (!currentCustomer) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/customer/" + currentCustomer.accountNumber
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+            alert(data.message);
+            return;
+        }
+
+        currentCustomer = data.customer;
+
+        localStorage.setItem(
+            "agnCustomer",
+            JSON.stringify(currentCustomer)
+        );
+
+        updateCustomerDisplay();
+
+        loadTransactions();
+
+    } catch (error) {
+
+        alert("Could not refresh account.");
+    }
+}
+
+
+/* =====================================================
+   SHOW SECTION
+===================================================== */
+
+function showSection(sectionId) {
+
+    document.querySelectorAll(".section")
+        .forEach(section => {
+
+            section.classList.remove("active");
+
+        });
+
+    const section =
+        document.getElementById(sectionId);
+
+    section.classList.add("active");
+
+    if (sectionId === "transactionsSection") {
+        loadTransactions();
+    }
+
+    if (sectionId === "grocerySection") {
+        loadGroceries();
+    }
+}
+
+
+/* =====================================================
+   RECEIVE MONEY
+===================================================== */
+
+async function requestMoney() {
+
+    const amount =
+        document.getElementById("receiveAmount").value;
+
+    const source =
+        document.getElementById("receiveSource").value.trim();
+
+    const reason =
+        document.getElementById("receiveReason").value.trim();
+
+    if (!amount || !source) {
+
+        showMessage(
+            "receiveMessage",
+            "Enter the amount and source.",
+            false
+        );
+
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/receive-request", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                accountNumber:
+                    currentCustomer.accountNumber,
+
+                amount,
+                source,
+                reason
+
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+                "receiveMessage",
+                data.message,
+                false
+            );
+
+            return;
+        }
+
+        showMessage(
+            "receiveMessage",
+            "Request sent to the manager for approval.",
+            true
+        );
+
+        document.getElementById("receiveAmount").value = "";
+        document.getElementById("receiveSource").value = "";
+        document.getElementById("receiveReason").value = "";
+
+    } catch (error) {
+
+        showMessage(
+            "receiveMessage",
+            "Could not connect to server.",
+            false
+        );
+    }
+}
+
+
+/* =====================================================
+   BILLS
+===================================================== */
+
+async function payBill() {
+
+    const billType =
+        document.getElementById("billType").value;
+
+    const reference =
+        document.getElementById("billReference").value.trim();
+
+    const amount =
+        document.getElementById("billAmount").value;
+
+    if (!billType || !reference || !amount) {
+
+        showMessage(
+            "billMessage",
+            "Please complete all bill payment fields.",
+            false
+        );
+
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/bill-payment", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                accountNumber:
+                    currentCustomer.accountNumber,
+
+                billType,
+                reference,
+                amount
+
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+                "billMessage",
+                data.message,
+                false
+            );
+
+            return;
+        }
+
+        showMessage(
+            "billMessage",
+            data.message,
+            true
+        );
+
+        document.getElementById("billType").value = "";
+        document.getElementById("billReference").value = "";
+        document.getElementById("billAmount").value = "";
+
+        await refreshAccount();
+
+    } catch (error) {
+
+        showMessage(
+            "billMessage",
+            "Could not connect to server.",
+            false
+        );
+    }
+}
+
+
+/* =====================================================
+   SCHOOL LIST
+===================================================== */
+
+function updateSchoolList() {
+
+    const category =
+        document.getElementById("schoolCategory").value;
+
+    const schoolSelect =
+        document.getElementById("schoolSelect");
+
+    const feeBox =
+        document.getElementById("schoolFeeBox");
+
+    schoolSelect.innerHTML = "";
+
+    feeBox.classList.add("hidden");
+
+    if (!category) {
+
+        schoolSelect.disabled = true;
+
+        schoolSelect.innerHTML =
+            '<option value="">-- Select Education Level First --</option>';
+
+        return;
+    }
+
+    schoolSelect.disabled = false;
+
+    schoolSelect.innerHTML =
+        '<option value="">-- Select School --</option>';
+
+    const filteredSchools =
+        schools.filter(
+            school => school.category === category
+        );
+
+    filteredSchools.forEach(school => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = school.id;
+
+        option.textContent =
+            school.name + " - $" +
+            Number(school.fee).toFixed(2);
+
+        schoolSelect.appendChild(option);
+
+    });
+}
+
+
+/* =====================================================
+   SHOW SCHOOL FEE
+===================================================== */
+
+function showSelectedSchoolFee() {
+
+    const schoolId =
+        document.getElementById("schoolSelect").value;
+
+    const feeBox =
+        document.getElementById("schoolFeeBox");
+
+    if (!schoolId) {
+
+        feeBox.classList.add("hidden");
+
+        return;
+    }
+
+    const school =
+        schools.find(
+            s => String(s.id) === String(schoolId)
+        );
+
+    if (!school) {
+
+        feeBox.classList.add("hidden");
+
+        return;
+    }
+
+    document.getElementById("selectedSchoolName")
+        .textContent = school.name;
+
+    document.getElementById("selectedSchoolFee")
+        .textContent =
+        Number(school.fee).toFixed(2);
+
+    feeBox.classList.remove("hidden");
+}
+
+
+/* =====================================================
+   PAY SCHOOL FEES
+===================================================== */
+
+async function paySchoolFees() {
+
+    const schoolId =
+        document.getElementById("schoolSelect").value;
+
+    const studentName =
+        document.getElementById("studentName")
+            .value.trim();
+
+    if (!schoolId) {
+
+        showMessage(
+            "schoolMessage",
+            "Please select an education level and school.",
+            false
+        );
+
+        return;
+    }
+
+    if (!studentName) {
+
+        showMessage(
+            "schoolMessage",
+            "Please enter the student's name.",
+            false
+        );
+
+        return;
+    }
+
+    const school =
+        schools.find(
+            s => String(s.id) === String(schoolId)
+        );
+
+    if (!school) {
+
+        showMessage(
+            "schoolMessage",
+            "School not found.",
+            false
+        );
+
+        return;
+    }
+
+    const confirmed =
+        confirm(
+            "Pay $" +
+            Number(school.fee).toFixed(2) +
+            " to " +
+            school.name +
+            " for " +
+            studentName +
+            "?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch("/school-fee-payment", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    accountNumber:
+                        currentCustomer.accountNumber,
+
+                    schoolId,
+                    studentName
+
+                })
+            });
+
+        const data =
+            await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+                "schoolMessage",
+                data.message,
+                false
+            );
+
+            return;
+        }
+
+        showMessage(
+            "schoolMessage",
+            "School fees paid successfully.",
+            true
+        );
+
+        document.getElementById("schoolCategory").value = "";
+
+        document.getElementById("schoolSelect").innerHTML =
+            '<option value="">-- Select Education Level First --</option>';
+
+        document.getElementById("schoolSelect").disabled = true;
+
+        document.getElementById("schoolFeeBox")
+            .classList.add("hidden");
+
+        document.getElementById("studentName").value = "";
+
+        await refreshAccount();
+
+    } catch (error) {
+
+        showMessage(
+            "schoolMessage",
+            "Could not connect to server.",
+            false
+        );
+    }
+}
+
+
+/* =====================================================
+   GROCERIES
+===================================================== */
+
+async function loadGroceries() {
+
+    const container =
+        document.getElementById("groceryProducts");
+
+    try {
+
+        const response =
+            await fetch("/grocery-products");
+
+        const data =
+            await response.json();
+
+        if (!data.success) {
+
+            container.textContent =
+                "Could not load groceries.";
+
+            return;
+        }
+
+        container.innerHTML = "";
+
+        data.products.forEach(product => {
+
+            const div =
+                document.createElement("div");
+
+            div.className = "product";
+
+            div.innerHTML = `
+
+                <strong>${escapeHTML(product.name)}</strong>
+
+                <p>
+                    Price:
+                    $${Number(product.price).toFixed(2)}
+                </p>
+
+                <label>Quantity</label>
+
+                <input
+                    type="number"
+                    min="0"
+                    value="0"
+                    class="grocery-quantity"
+                    data-id="${product.id}"
+                    data-price="${product.price}"
+                    onchange="calculateGroceryTotal()"
+                >
+
+            `;
+
+            container.appendChild(div);
+
+        });
+
+    } catch (error) {
+
+        container.textContent =
+            "Could not connect to server.";
+    }
+}
+
+
+function calculateGroceryTotal() {
+
+    let total = 0;
+
+    document.querySelectorAll(".grocery-quantity")
+        .forEach(input => {
+
+            const quantity =
+                Number(input.value || 0);
+
+            const price =
+                Number(input.dataset.price || 0);
+
+            total += quantity * price;
+
+        });
+
+    document.getElementById("groceryTotal")
+        .textContent =
+        total.toFixed(2);
+}
+
+
+async function checkoutGroceries() {
+
+    const items = [];
+
+    document.querySelectorAll(".grocery-quantity")
+        .forEach(input => {
+
+            const quantity =
+                Number(input.value || 0);
+
+            if (quantity > 0) {
+
+                items.push({
+
+                    productId:
+                        input.dataset.id,
+
+                    quantity
+
+                });
+
+            }
+
+        });
+
+    if (items.length === 0) {
+
+        showMessage(
+            "groceryMessage",
+            "Select at least one product.",
+            false
+        );
+
+        return;
+    }
+
+    const total =
+        Number(
+            document.getElementById("groceryTotal")
+                .textContent
+        );
+
+    const confirmed =
+        confirm(
+            "Confirm grocery purchase of $" +
+            total.toFixed(2) +
+            "?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch("/grocery-purchase", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    accountNumber:
+                        currentCustomer.accountNumber,
+
+                    items
+
+                })
+            });
+
+        const data =
+            await response.json();
+
+        if (!data.success) {
+
+            showMessage(
+                "groceryMessage",
+                data.message,
+                false
+            );
+
+            return;
+        }
+
+        showMessage(
+            "groceryMessage",
+            "Purchase successful.",
+            true
+        );
+
+        document.querySelectorAll(".grocery-quantity")
+            .forEach(input => {
+                input.value = 0;
+            });
+
+        calculateGroceryTotal();
+
+        await refreshAccount();
+
+    } catch (error) {
+
+        showMessage(
+            "groceryMessage",
+            "Could not connect to server.",
+            false
+        );
+    }
+}
+
+
+/* =====================================================
+   TRANSACTION HISTORY
+===================================================== */
+
+async function loadTransactions() {
+
+    if (!currentCustomer) {
+        return;
+    }
+
+    const body =
+        document.getElementById("transactionsBody");
+
+    try {
+
+        const response =
+            await fetch(
+                "/transactions/" +
+                currentCustomer.accountNumber
+            );
+
+        const data =
+            await response.json();
+
+        if (!data.success) {
+
+            body.innerHTML =
+                "<tr><td colspan='6'>No transactions found.</td></tr>";
+
+            return;
+        }
+
+        body.innerHTML = "";
+
+        if (data.transactions.length === 0) {
+
+            body.innerHTML =
+                "<tr><td colspan='6'>No transactions yet.</td></tr>";
+
+            return;
+        }
+
+        data.transactions.forEach(transaction => {
+
+            const row =
+                document.createElement("tr");
+
+            const date =
+                new Date(transaction.date)
+                    .toLocaleString();
+
+            row.innerHTML = `
+
+                <td>${escapeHTML(date)}</td>
+
+                <td>
+                    ${escapeHTML(
+                        transaction.type || ""
+                    )}
+                </td>
+
+                <td>
+                    $${Number(
+                        transaction.amount || 0
+                    ).toFixed(2)}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        transaction.source || ""
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        transaction.description || ""
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        transaction.status || ""
+                    )}
+                </td>
+
+            `;
+
+            body.appendChild(row);
+
+        });
+
+    } catch (error) {
+
+        body.innerHTML =
+            "<tr><td colspan='6'>Could not load transactions.</td></tr>";
+    }
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logout() {
+
+    currentCustomer = null;
+
+    localStorage.removeItem("agnCustomer");
+
+    document.getElementById("dashboard")
+        .classList.add("hidden");
+
+    document.getElementById("startPage")
+        .classList.remove("hidden");
+
+    document.querySelectorAll(".section")
+        .forEach(section => {
+
+            section.classList.remove("active");
+
+        });
+}
+
+
+/* =====================================================
+   SECURITY FOR DISPLAYED TEXT
+===================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* =====================================================
+   RESTORE LOGIN AFTER REFRESH
+===================================================== */
+
+window.addEventListener("load", async function() {
+
+    const saved =
+        localStorage.getItem("agnCustomer");
+
+    if (!saved) {
+        return;
+    }
+
+    try {
+
+        currentCustomer =
+            JSON.parse(saved);
+
+        await refreshAccount();
+
+        openDashboard();
+
+    } catch (error) {
+
+        localStorage.removeItem("agnCustomer");
+
+        currentCustomer = null;
+    }
+
+});
+
+</script>
+
+</body>
+</html>

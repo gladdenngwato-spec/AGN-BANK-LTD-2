@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AGN Bank Ltd - Manager</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #eef2f7;
+    color: #222;
+}
+
+header {
+    background: #0b2d4d;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+input,
+select,
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 7px 0;
+    border-radius: 7px;
+    border: 1px solid #bbb;
+    font-size: 15px;
+}
+
+button {
+    background: #0b2d4d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.success {
+    background: #18794e;
+}
+
+.danger {
+    background: #b3261e;
+}
+
+.secondary {
+    background: #555;
+}
+
+.hidden {
+    display: none;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 15px;
+}
+
+.menu-button {
+    background: white;
+    color: #0b2d4d;
+    border: 2px solid #0b2d4d;
+    padding: 18px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.summary {
+    background: #0b2d4d;
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.summary h2 {
+    margin: 5px 0;
+    font-size: 28px;
+}
+
+.request,
+.customer,
+.transaction {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 12px 0;
+}
+
+.pending {
+    border-left: 5px solid #f0a000;
+}
+
+.approved {
+    border-left: 5px solid #18794e;
+}
+
+.rejected {
+    border-left: 5px solid #b3261e;
+}
+
+.message {
+    padding: 12px;
+    background: #e8f1ff;
+    border-radius: 7px;
+    margin: 10px 0;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+th,
+td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #0b2d4d;
+    color: white;
+}
+
+.money {
+    font-weight: bold;
+}
+
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>AGN Bank Ltd</h1>
+    <p>Bank Manager Portal</p>
+</header>
+
+<div class="container">
+
+<!-- =========================
+     MANAGER LOGIN
+     ========================= -->
+
+<div id="loginScreen" class="card">
+
+    <h2>Manager Login</h2>
+
+    <p>Enter the manager credentials.</p>
+
+    <input
+        type="text"
+        id="managerUsername"
+        placeholder="Manager Username"
+    >
+
+    <input
+        type="password"
+        id="managerPassword"
+        placeholder="Manager Password"
+    >
+
+    <button onclick="managerLogin()">
+        Login
+    </button>
+
+    <div id="loginMessage"></div>
+
+</div>
+
+
+<!-- =========================
+     DASHBOARD
+     ========================= -->
+
+<div id="dashboard" class="hidden">
+
+    <div class="card">
+
+        <h2>Manager Dashboard</h2>
+
+        <div class="summary-grid">
+
+            <div class="summary">
+                <p>Customers</p>
+                <h2 id="totalCustomers">0</h2>
+            </div>
+
+            <div class="summary">
+                <p>Total Customer Money</p>
+                <h2>$<span id="totalMoney">0.00</span></h2>
+            </div>
+
+            <div class="summary">
+                <p>Account Requests</p>
+                <h2 id="pendingAccounts">0</h2>
+            </div>
+
+            <div class="summary">
+                <p>Receive Requests</p>
+                <h2 id="pendingReceives">0</h2>
+            </div>
+
+            <div class="summary">
+                <p>Transactions</p>
+                <h2 id="totalTransactions">0</h2>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         MENU
+         ========================= -->
+
+    <div class="card">
+
+        <h2>Manager Services</h2>
+
+        <div class="dashboard-grid">
+
+            <button
+                class="menu-button"
+                onclick="showSection('accountRequestsSection')"
+            >
+                Account Requests
+            </button>
+
+            <button
+                class="menu-button"
+                onclick="showSection('customersSection')"
+            >
+                Customers
+            </button>
+
+            <button
+                class="menu-button"
+                onclick="showSection('receiveRequestsSection')"
+            >
+                Receive-Money Requests
+            </button>
+
+            <button
+                class="menu-button"
+                onclick="showSection('sendMoneySection')"
+            >
+                Send Money
+            </button>
+
+            <button
+                class="menu-button"
+                onclick="showSection('transactionsSection')"
+            >
+                All Transactions
+            </button>
+
+            <button
+                class="menu-button"
+                onclick="refreshDashboard()"
+            >
+                Refresh Dashboard
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ACCOUNT REQUESTS
+         ========================= -->
+
+    <div
+        id="accountRequestsSection"
+        class="card hidden"
+    >
+
+        <h2>Customer Account Requests</h2>
+
+        <p>
+            Review new customer applications and approve or reject them.
+        </p>
+
+        <button onclick="loadAccountRequests()">
+            Refresh Requests
+        </button>
+
+        <div id="accountRequests">
+            Loading...
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         CUSTOMERS
+         ========================= -->
+
+    <div
+        id="customersSection"
+        class="card hidden"
+    >
+
+        <h2>Customer Accounts</h2>
+
+        <button onclick="loadCustomers()">
+            Refresh Customers
+        </button>
+
+        <div id="customers">
+            Loading...
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         RECEIVE REQUESTS
+         ========================= -->
+
+    <div
+        id="receiveRequestsSection"
+        class="card hidden"
+    >
+
+        <h2>Receive-Money Requests</h2>
+
+        <p>
+            Approve or reject money customers want to receive
+            from external sources.
+        </p>
+
+        <button onclick="loadReceiveRequests()">
+            Refresh Requests
+        </button>
+
+        <div id="receiveRequests">
+            Loading...
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         SEND MONEY
+         ========================= -->
+
+    <div
+        id="sendMoneySection"
+        class="card hidden"
+    >
+
+        <h2>Send Money to Customer</h2>
+
+        <input
+            type="text"
+            id="sendAccountNumber"
+            placeholder="Customer Account Number"
+        >
+
+        <input
+            type="number"
+            id="sendAmount"
+            placeholder="Amount"
+            min="0.01"
+            step="0.01"
+        >
+
+        <input
+            type="text"
+            id="sendSource"
+            placeholder="Source e.g. AGN Bank / Work / Bonus"
+        >
+
+        <input
+            type="text"
+            id="sendReason"
+            placeholder="Reason for payment"
+        >
+
+        <button
+            class="success"
+            onclick="sendMoney()"
+        >
+            Send Money
+        </button>
+
+        <div id="sendMessage"></div>
+
+    </div>
+
+
+    <!-- =========================
+         TRANSACTIONS
+         ========================= -->
+
+    <div
+        id="transactionsSection"
+        class="card hidden"
+    >
+
+        <h2>All Bank Transactions</h2>
+
+        <button onclick="loadTransactions()">
+            Refresh Transactions
+        </button>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Date</th>
+                        <th>Account</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Source</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="transactionTable">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         LOGOUT
+         ========================= -->
+
+    <div class="card">
+
+        <button
+            class="danger"
+            onclick="logout()"
+        >
+            Logout Manager
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   MANAGER LOGIN
+   ========================= */
+
+/*
+   Demo manager credentials.
+
+   Username:
+   manager
+
+   Password:
+   AGN2026
+*/
+
+const MANAGER_USERNAME = "manager";
+const MANAGER_PASSWORD = "AGN2026";
+
+
+function managerLogin() {
+
+    const username =
+        document.getElementById("managerUsername")
+            .value.trim();
+
+    const password =
+        document.getElementById("managerPassword")
+            .value.trim();
+
+    const message =
+        document.getElementById("loginMessage");
+
+    if (
+        username === MANAGER_USERNAME &&
+        password === MANAGER_PASSWORD
+    ) {
+
+        sessionStorage.setItem(
+            "agnManagerLoggedIn",
+            "true"
+        );
+
+        document
+            .getElementById("loginScreen")
+            .classList.add("hidden");
+
+        document
+            .getElementById("dashboard")
+            .classList.remove("hidden");
+
+        refreshDashboard();
+
+    } else {
+
+        message.innerHTML =
+            `<div class="message">
+                Invalid manager username or password.
+            </div>`;
+    }
+}
+
+
+/* =========================
+   SECTIONS
+   ========================= */
+
+function showSection(id) {
+
+    const sections = [
+
+        "accountRequestsSection",
+        "customersSection",
+        "receiveRequestsSection",
+        "sendMoneySection",
+        "transactionsSection"
+
+    ];
+
+    sections.forEach(section => {
+
+        document
+            .getElementById(section)
+            .classList.add("hidden");
+
+    });
+
+    document
+        .getElementById(id)
+        .classList.remove("hidden");
+
+    if (id === "accountRequestsSection") {
+        loadAccountRequests();
+    }
+
+    if (id === "customersSection") {
+        loadCustomers();
+    }
+
+    if (id === "receiveRequestsSection") {
+        loadReceiveRequests();
+    }
+
+    if (id === "transactionsSection") {
+        loadTransactions();
+    }
+}
+
+
+/* =========================
+   DASHBOARD SUMMARY
+   ========================= */
+
+async function refreshDashboard() {
+
+    try {
+
+        const response =
+            await fetch("/manager/summary");
+
+        const data =
+            await response.json();
+
+        if (!data.success) {
+            return;
+        }
+
+        document.getElementById("totalCustomers")
+            .textContent = data.totalCustomers;
+
+        document.getElementById("totalMoney")
+            .textContent =
+            Number(data.totalMoney).toFixed(2);
+
+        document.getElementById("pendingAccounts")
+            .textContent =
+            data.pendingAccountRequests;
+
+        document.getElementById("pendingReceives")
+            .textContent =
+            data.pendingReceiveRequests;
+
+        document.getElementById("totalTransactions")
+            .textContent =
+            data.totalTransactions;
+
+    } catch (error) {
+
+        console.error(error);
+    }
+}
+
+
+/* =========================
+   ACCOUNT REQUESTS
+   ========================= */
+
+async function loadAccountRequests() {
+
+    const container =
+        document.getElementById("accountRequests");
+
+    container.innerHTML = "Loading...";
+
+    try {
+
+        const response =
+            await fetch("/manager/account-requests");
+
+        const data =
+            await response.json();
+
+        container.innerHTML = "";
+
+        if (
+            !data.requests ||
+            data.requests.length === 0
+        ) {
+
+            container.innerHTML =
+                "<p>No account requests.</p>";
+
+            return;
+        }
+
+        data.requests
+            .sort(
+                (a, b) =>
+                    new Date(b.date) -
+                    new Date(a.date)
+            )
+            .forEach(request => {
+
+                const div =
+                    document.createElement("div");
+
+                div.className =
+                    `request ${request.status.toLowerCase()}`;
+
+                let buttons = "";
+
+                if (request.status === "Pending") {
+
+                    buttons = `
+
+                        <button
+                            class="success"
+                            onclick="approveAccount(${request.id})"
+                        >
+                            Approve Account
+                        </button>
+
+                        <button
+                            class="danger"
+                            onclick="rejectAccount(${request.id})"
+                        >
+                            Reject
+                        </button>
+
+                    `;
+                }
+
+                div.innerHTML = `
+
+                    <h3>${request.name}</h3>
+
+                    <p>
+                        <strong>Birthdate:</strong>
+                        ${request.birthdate}
+                    </p>
+
+                    <p>
+                        <strong>Age:</strong>
+                        ${request.age}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        ${request.status}
+                    </p>
+
+                    <p>
+                        <strong>Request Date:</strong>
+                        ${new Date(
+                            request.date
+                        ).toLocaleString()}
+                    </p>
+
+                    ${
+                        request.accountNumber
+                        ?
+                        `<p>
+                            <strong>Account Number:</strong>
+                            ${request.accountNumber}
+                        </p>`
+                        : ""
+                    }
+
+                    ${buttons}
+
+                `;
+
+                container.appendChild(div);
+
+            });
+
+    } catch (error) {
+
+        container.innerHTML =
+            `<div class="message">
+                Unable to load account requests.
+            </div>`;
+    }
+}
+
+
+/* =========================
+   APPROVE ACCOUNT
+   ========================= */
+
+async function approveAccount(requestId) {
+
+    const customPin =
+        prompt(
+            "Enter a 4-digit PIN for this customer.\n\n" +
+            "Leave blank to automatically generate one."
+        );
+
+    if (
+        customPin !== null &&
+        customPin !== "" &&
+        !/^\d{4}$/.test(customPin)
+    ) {
+
+        alert("PIN must contain exactly 4 digits.");
+
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                "/manager/approve-account",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        requestId,
+
+                        pin:
+                            customPin || undefined
+
+                    })
+
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            alert(data.message);
+
+            return;
+        }
+
+        alert(
+            "ACCOUNT APPROVED\n\n" +
+            "Customer: " +
+            data.customer.name +
+            "\n\n" +
+            "Account Number: " +
+            data.customer.accountNumber +
+            "\n\n" +
+            "PIN: " +
+            data.customer.pin
+        );
+
+        loadAccountRequests();
+        refreshDashboard();
+        loadCustomers();
+
+    } catch (error) {
+
+        alert(
+            "Unable to connect to the bank server."
+        );
+    }
+}
+
+
+/* =========================
+   REJECT ACCOUNT
+   ========================= */
+
+async function rejectAccount(requestId) {
+
+    if (
+        !confirm(
+            "Are you sure you want to reject this account request?"
+        )
+    ) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                "/manager/reject-account",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        requestId
+                    })
+
+                }
+            );
+
+        const data =
+            await response.json();
+
+        alert(data.message);
+
+        loadAccountRequests();
+        refreshDashboard();
+
+    } catch (error) {
+
+        alert("Server connection failed.");
+    }
+}
+
+
+/* =========================
+   CUSTOMERS
+   ========================= */
+
+async function loadCustomers() {
+
+    const container =
+        document.getElementById("customers");
+
+    container.innerHTML = "Loading...";
+
+    try {
+
+        const response =
+            await fetch("/manager/customers");
+
+        const data =
+            await response.json();
+
+        if (
+            !data.customers ||
+            data.customers.length === 0
+        ) {
+
+            container.innerHTML =
+                "<p>No customers yet.</p>";
+
+            return;
+        }
+
+        let html = `
+
+            <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Name</th>
+                        <th>Account Number</th>
+                        <th>Age</th>
+                        <th>Birthdate</th>
+                        <th>Balance</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+        `;
+
+        data.customers.forEach(customer => {
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${customer.name}
+                    </td>
+
+                    <td>
+                        ${customer.accountNumber}
+                    </td>
+
+                    <td>
+                        ${customer.age}
+                    </td>
+
+                    <td>
+                        ${customer.birthdate || "-"}
+                    </td>
+
+                    <td class="money">
+                        $${Number(
+                            customer.balance || 0
+                        ).toFixed(2)}
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+        html += `
+
+                </tbody>
+
+            </table>
+
+            </div>
+
+        `;
+
+        container.innerHTML = html;
+
+    } catch (error) {
+
+        container.innerHTML =
+            `<div class="message">
+                Unable to load customers.
+            </div>`;
+    }
+}
+
+
+/* =========================
+   RECEIVE REQUESTS
+   ========================= */
+
+async function loadReceiveRequests() {
+
+    const container =
+        document.getElementById(
+            "receiveRequests"
+        );
+
+    container.innerHTML = "Loading...";
+
+    try {
+
+        const response =
+            await fetch(
+                "/manager/receive-requests"
+            );
+
+        const data =
+            await response.json();
+
+        container.innerHTML = "";
+
+        if (
+            !data.requests ||
+            data.requests.length === 0
+        ) {
+
+            container.innerHTML =
+                "<p>No receive-money requests.</p>";
+
+            return;
+        }
+
+        data.requests
+            .sort(
+                (a, b) =>
+                    new Date(b.date) -
+                    new Date(a.date)
+            )
+            .forEach(request => {
+
+                const div =
+                    document.createElement("div");
+
+                div.className =
+                    `request ${request.status.toLowerCase()}`;
+
+                let buttons = "";
+
+                if (request.status === "Pending") {
+
+                    buttons = `
+
+                        <button
+                            class="success"
+                            onclick="approveReceive(${request.id})"
+                        >
+                            Approve Payment
+                        </button>
+
+                        <button
+                            class="danger"
+                            onclick="rejectReceive(${request.id})"
+                        >
+                            Reject
+                        </button>
+
+                    `;
+                }
+
+                div.innerHTML = `
+
+                    <h3>
+                        ${request.customerName}
+                    </h3>
+
+                    <p>
+                        <strong>Account:</strong>
+                        ${request.accountNumber}
+                    </p>
+
+                    <p>
+                        <strong>Amount:</strong>
+                        $${Number(
+                            request.amount
+                        ).toFixed(2)}
+                    </p>
+
+                    <p>
+                        <strong>Source:</strong>
+                        ${request.source}
+                    </p>
+
+                    <p>
+                        <strong>Reason:</strong>
+                        ${request.reason}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        ${request.status}
+                    </p>
+
+                    ${buttons}
+
+                `;
+
+                container.appendChild(div);
+
+            });
+
+    } catch (error) {
+
+        container.innerHTML =
+            `<div class="message">
+                Unable to load receive requests.
+            </div>`;
+    }
+}
+
+
+/* =========================
+   APPROVE RECEIVE
+   ========================= */
+
+async function approveReceive(requestId) {
+
+    if (
+        !confirm(
+            "Approve this money request?"
+        )
+    ) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                "/manager/approve-receive",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        requestId
+                    })
+
+                }
+            );
+
+        const data =
+            await response.json();
+
+        alert(data.message);
+
+        loadReceiveRequests();
+        loadCustomers();
+        refreshDashboard();
+        loadTransactions();
+
+    } catch (error) {
+
+        alert("Server connection failed.");
+    }
+}
+
+
+/* =========================
+   REJECT RECEIVE
+   ========================= */
+
+async function rejectReceive(requestId) {
+
+    if (
+        !confirm(
+            "Reject this money request?"
+        )
+    ) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                "/manager/reject-receive",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        requestId
+                    })
+
+                }
+            );
+
+        const data =
+            await response.json();
+
+        alert(data.message);
+
+        loadReceiveRequests();
+        refreshDashboard();
+
+    } catch (error) {
+
+        alert("Server connection failed.");
+    }
+}
+
+
+/* =========================
+   SEND MONEY
+   ========================= */
+
+async function sendMoney() {
+
+    const accountNumber =
+        document
+            .getElementById("sendAccountNumber")
+            .value.trim();
+
+    const amount =
+        Number(
+            document.getElementById("sendAmount").value
+        );
+
+    const source =
+        document
+            .getElementById("sendSource")
+            .value.trim();
+
+    const reason =
+        document
+            .getElementById("sendReason")
+            .value.trim();
+
+    const message =
+        document.getElementById("sendMessage");
+
+    if (
+        !accountNumber ||
+        !amount ||
+        amount <= 0 ||
+        !source ||
+        !reason
+    ) {
+
+        message.innerHTML =
+            `<div class="message">
+                Complete all fields.
+            </div>`;
+
+        return;
+    }
+
+    if (
+        !confirm(
+            `Send $${amount.toFixed(2)}
+             to account ${accountNumber}?`
+        )
+    ) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                "/manager/send-money",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        accountNumber,
+                        amount,
+                        source,
+                        reason
+
+                    })
+
+                }
+            );
+
+        const data =
+            await response.json();
+
+        message.innerHTML =
+            `<div class="message">
+                ${data.message}
+            </div>`;
+
+        if (data.success) {
+
+            document
+                .getElementById("sendAccountNumber")
+                .value = "";
+
+            document
+                .getElementById("sendAmount")
+                .value = "";
+
+            document
+                .getElementById("sendSource")
+                .value = "";
+
+            document
+                .getElementById("sendReason")
+                .value = "";
+
+            refreshDashboard();
+            loadCustomers();
+            loadTransactions();
+        }
+
+    } catch (error) {
+
+        message.innerHTML =
+            `<div class="message">
+                Unable to connect to server.
+            </div>`;
+    }
+}
+
+
+/* =========================
+   TRANSACTIONS
+   ========================= */
+
+async function loadTransactions() {
+
+    const table =
+        document.getElementById(
+            "transactionTable"
+        );
+
+    table.innerHTML = `
+        <tr>
+            <td colspan="7">
+                Loading...
+            </td>
+        </tr>
+    `;
+
+    try {
+
+        const response =
+            await fetch(
+                "/manager/transactions"
+            );
+
+        const data =
+            await response.json();
+
+        table.innerHTML = "";
+
+        if (
+            !data.transactions ||
+            data.transactions.length === 0
+        ) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        No transactions yet.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        data.transactions.forEach(transaction => {
+
+            let description =
+                transaction.description || "";
+
+            if (
+                transaction.type ===
+                "GROCERY_PURCHASE"
+            ) {
+
+                if (transaction.items) {
+
+                    description =
+                        transaction.items
+                            .map(
+                                item =>
+                                    `${item.name} x${item.quantity}`
+                            )
+                            .join(", ");
+                }
+            }
+
+            if (
+                transaction.type ===
+                "SCHOOL_FEE_PAYMENT"
+            ) {
+
+                description =
+                    `Student: ${
+                        transaction.studentName
+                    } | ID: ${
+                        transaction.studentId
+                    }`;
+            }
+
+            if (
+                transaction.type ===
+                "BILL_PAYMENT"
+            ) {
+
+                description =
+                    `${transaction.billType} | Ref: ${
+                        transaction.reference
+                    }`;
+            }
+
+            const row =
+                document.createElement("tr");
+
+            row.innerHTML = `
+
+                <td>
+                    ${new Date(
+                        transaction.date
+                    ).toLocaleString()}
+                </td>
+
+                <td>
+                    ${transaction.accountNumber || "-"}
+                </td>
+
+                <td>
+                    ${transaction.type || "-"}
+                </td>
+
+                <td class="money">
+                    $${Number(
+                        transaction.amount || 0
+                    ).toFixed(2)}
+                </td>
+
+                <td>
+                    ${transaction.source || "-"}
+                </td>
+
+                <td>
+                    ${description}
+                </td>
+
+                <td>
+                    ${transaction.status || "-"}
+                </td>
+
+            `;
+
+            table.appendChild(row);
+
+        });
+
+    } catch (error) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7">
+                    Unable to load transactions.
+                </td>
+            </tr>
+        `;
+    }
+}
+
+
+/* =========================
+   LOGOUT
+   ========================= */
+
+function logout() {
+
+    sessionStorage.removeItem(
+        "agnManagerLoggedIn"
+    );
+
+    document
+        .getElementById("dashboard")
+        .classList.add("hidden");
+
+    document
+        .getElementById("loginScreen")
+        .classList.remove("hidden");
+
+    document.getElementById(
+        "managerUsername"
+    ).value = "";
+
+    document.getElementById(
+        "managerPassword"
+    ).value = "";
+}
+
+
+/* =========================
+   RESTORE MANAGER SESSION
+   ========================= */
+
+window.addEventListener("load", () => {
+
+    const loggedIn =
+        sessionStorage.getItem(
+            "agnManagerLoggedIn"
+        );
+
+    if (loggedIn === "true") {
+
+        document
+            .getElementById("loginScreen")
+            .classList.add("hidden");
+
+        document
+            .getElementById("dashboard")
+            .classList.remove("hidden");
+
+        refreshDashboard();
+    }
+
+});
+
+</script>
+
+</body>
+</html>
